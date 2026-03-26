@@ -9,14 +9,14 @@ public class Main {
         System.out.println("hi");
 
         String[] strArr = {"a","b","c","d","e"};
-        Filter<String> filter = new FilterImpl<>();
+        Filter<Object> filter = new FilterImpl<>();
         applyToArray(strArr, filter);
         System.out.println(Arrays.toString(strArr));
 
     }
 
-    public static String[] applyToArray (String[] strArr, Filter<String> filter) {
-        return Arrays.stream(strArr).map(str -> filter.apply(str)).toArray(String[]::new);
+    public static Object[] applyToArray (Object[] arr, Filter<Object> filter) {
+        return Arrays.stream(arr).map(o -> filter.apply(o)).toArray();
 
     }
 }
