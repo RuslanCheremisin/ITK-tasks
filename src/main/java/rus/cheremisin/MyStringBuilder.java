@@ -3,7 +3,7 @@ package rus.cheremisin;
 import java.util.LinkedList;
 import java.util.List;
 
-public class MyStringBuilder implements Cloneable {
+public class MyStringBuilder {
     private String stringValue;
     private List<MyStringBuilder> undoStackList;
 
