@@ -21,10 +21,9 @@ class BlockingQueue {
         this.sizeLimit = sizeLimit;
     }
 
-    public void enqueue() throws InterruptedException {
+    public void enqueue() {
         Random random = new Random();
         while (true) {
-
             synchronized (this) {
                 while (size() == sizeLimit) {
                     System.out.println(Thread.currentThread().getName() + " queue is full! waiting... Size = " + size());
@@ -45,7 +44,7 @@ class BlockingQueue {
         }
     }
 
-    public void dequeue() throws InterruptedException {
+    public void dequeue() {
         while (true) {
             synchronized (this) {
                 while (size() == 0) {
@@ -70,34 +69,10 @@ class BlockingQueue {
     }
 
     public void doTheTask() throws InterruptedException {
-        Thread thread1 = new Thread(() -> {
-            try {
-                enqueue();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread2 = new Thread(() -> {
-            try {
-                dequeue();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread3 = new Thread(() -> {
-            try {
-                dequeue();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
-        Thread thread4 = new Thread(() -> {
-            try {
-                enqueue();
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        Thread thread1 = new Thread(() -> enqueue());
+        Thread thread2 = new Thread(() -> dequeue());
+        Thread thread3 = new Thread(() -> dequeue());
+        Thread thread4 = new Thread(() -> enqueue());
 
         thread1.start();
         thread2.start();
