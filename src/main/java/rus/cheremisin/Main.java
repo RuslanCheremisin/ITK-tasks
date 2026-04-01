@@ -22,47 +22,50 @@ class BlockingQueue {
     }
 
     public void enqueue() throws InterruptedException {
-        synchronized (this) {
-            Random random = new Random();
-            while (true) {
-                if (size() == sizeLimit) {
-                    System.out.println("queue is full!");
+        Random random = new Random();
+        while (true) {
+
+            synchronized (this) {
+                while (size() == sizeLimit) {
+                    System.out.println(Thread.currentThread().getName() + " queue is full! waiting... Size = " + size());
                     try {
                         this.wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                Thread.sleep(500);
+
                 int randomInt = random.nextInt(100);
                 queue.add(randomInt);
-                System.out.println("added element " + randomInt);
-                notify();
+                System.out.println(Thread.currentThread().getName() + " added element " + randomInt + ". Size = " + size());
+                notifyAll();
+
+
             }
         }
     }
 
     public void dequeue() throws InterruptedException {
-        synchronized (this) {
-            while (true) {
-                if (size() == 0) {
-                    System.out.println("queue is empty!");
+        while (true) {
+            synchronized (this) {
+                while (size() == 0) {
+                    System.out.println(Thread.currentThread().getName() + " queue is empty! waiting...! Size = " + size());
                     try {
                         wait();
                     } catch (InterruptedException e) {
                         throw new RuntimeException(e);
                     }
                 }
-                Thread.sleep(500);
+
                 int removedInt = queue.remove();
-                System.out.println("removed element " + removedInt);
-                notify();
+                System.out.println(Thread.currentThread().getName() + " removed element " + removedInt + ". Size = " + size());
+                notifyAll();
 
             }
         }
     }
 
-    public int size() {
+    public synchronized int size() {
         return queue.size();
     }
 
@@ -81,12 +84,30 @@ class BlockingQueue {
                 throw new RuntimeException(e);
             }
         });
+        Thread thread3 = new Thread(() -> {
+            try {
+                dequeue();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
+        Thread thread4 = new Thread(() -> {
+            try {
+                enqueue();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
         thread1.start();
         thread2.start();
+        thread3.start();
+        thread4.start();
 
         thread1.join();
-        thread1.join();
+        thread2.join();
+        thread3.join();
+        thread4.join();
     }
 
 
