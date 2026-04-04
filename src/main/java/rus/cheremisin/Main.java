@@ -38,8 +38,6 @@ class BlockingQueue {
                 queue.add(randomInt);
                 System.out.println(Thread.currentThread().getName() + " added element " + randomInt + ". Size = " + size());
                 notifyAll();
-
-
             }
         }
     }
