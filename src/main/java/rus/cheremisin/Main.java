@@ -1,9 +1,34 @@
 package rus.cheremisin;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+
+import java.util.List;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hi");
+        List<Order> orders = List.of(
+                new Order("Laptop", 1200.0),
+                new Order("Smartphone", 800.0),
+                new Order("Laptop", 1500.0),
+                new Order("Tablet", 500.0),
+                new Order("Smartphone", 900.0)
+        );
+    }
+}
+
+class Order {
+    private String product;
+    private double cost;
+
+    public Order(String product, double cost) {
+        this.product = product;
+        this.cost = cost;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public double getCost() {
+        return cost;
     }
 }
