@@ -34,7 +34,6 @@ public class Main {
             e.printStackTrace();
         }
 
-        // Вывод общего баланса
         System.out.println("Total balance: " + bank.getTotalBalance());
     }
 }
@@ -50,7 +49,6 @@ class ConcurrentBank {
     }
 
     public void transfer(BankAccount account1, BankAccount account2, int amount) {
-
         BankAccount first = account1.hashCode() < account2.hashCode() ? account1 : account2;
         BankAccount second = first == account2 ? account1 : account2;
 
