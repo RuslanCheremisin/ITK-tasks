@@ -4,6 +4,7 @@ package rus.cheremisin;
 import java.math.BigInteger;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.RecursiveTask;
+import java.util.stream.LongStream;
 
 public class Main {
     public static void main(String[] args) {
@@ -27,16 +28,10 @@ class FactorialTask extends RecursiveTask<BigInteger> {
 
     @Override
     public BigInteger compute() {
-        if (n == 0) {
-            return BigInteger.ONE;
-        } else if (n < 0) {
-            throw new RuntimeException("Нельзя вычислить факториал отрицательного числа!");
-        }
-        FactorialTask innerTask = new FactorialTask(n - 1);
-        innerTask.fork();
-
-        BigInteger subResult = innerTask.join();
-        return BigInteger.valueOf(n).multiply(subResult);
+        return LongStream.rangeClosed(1, n)
+                .parallel()
+                .mapToObj(BigInteger::valueOf)
+                .reduce(BigInteger.ONE, BigInteger::multiply);
     }
 }
 
