@@ -1,5 +1,7 @@
 package rus.cheremisin;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -14,13 +16,15 @@ public class Main {
                 new Student("Student4", Map.of("Physics", 78, "Chemistry", 85))
         );
 
-        Map<String, Integer> averageGrades = students
-                .stream()
-                .map(Student::getGrades)
-                .parallel()
-                .flatMap(map -> map.entrySet()
-                        .stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (g1, g2) -> (g1 + g2)/2));
+        Map<String, Double> averageGrades = students
+                .parallelStream()
+                .flatMap(s -> s.getGrades().entrySet().stream())
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        Collectors.collectingAndThen(
+                                Collectors.averagingInt(Map.Entry::getValue),
+                                avg -> BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP).doubleValue())
+                ));
         System.out.println(averageGrades);
     }
 
