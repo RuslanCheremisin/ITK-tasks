@@ -1,9 +1,45 @@
 package rus.cheremisin;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 public class Main {
     public static void main(String[] args) {
-        System.out.println("hi");
+        List<Student> students = Arrays.asList(
+                new Student("Student1", Map.of("Math", 90, "Physics", 85)),
+                new Student("Student2", Map.of("Math", 95, "Physics", 88)),
+                new Student("Student3", Map.of("Math", 88, "Chemistry", 92)),
+                new Student("Student4", Map.of("Physics", 78, "Chemistry", 85))
+        );
+
+        Map<String, Double> averageGrades = students
+                .parallelStream()
+                .flatMap(s -> s.getGrades().entrySet().stream())
+                .collect(Collectors.groupingBy(
+                        Map.Entry::getKey,
+                        Collectors.collectingAndThen(
+                                Collectors.averagingInt(Map.Entry::getValue),
+                                avg -> BigDecimal.valueOf(avg).setScale(2, RoundingMode.HALF_UP).doubleValue())
+                ));
+        System.out.println(averageGrades);
+    }
+
+}
+
+class Student {
+    private String name;
+    private Map<String, Integer> grades;
+
+    public Student(String name, Map<String, Integer> grades) {
+        this.name = name;
+        this.grades = grades;
+    }
+
+    public Map<String, Integer> getGrades() {
+        return grades;
     }
 }
